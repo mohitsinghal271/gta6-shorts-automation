@@ -31,16 +31,18 @@ def ensure_authorized_source() -> int:
         return sources[0]["id"]
 
     return db.add_source(
-        channel_name="Rockstar Games Official",
-        video_title="GTA 6 Official Vice City Gameplay Trailer & Press Kit",
+        title="GTA 6 Official Vice City Gameplay Trailer & Press Kit",
         license_type="Rockstar Press Kit Official",
+        source_url="https://youtube.com/watch?v=QdBZY2fkU-0",
+        creator_name="Rockstar Games Official",
         permission_verified=True,
-        channel_url="https://youtube.com/@RockstarGames",
-        video_url="https://youtube.com/watch?v=QdBZY2fkU-0",
         notes="Official Rockstar Press Kit B-Roll Asset",
-        evidence_type="PRESS_KIT_TERMS",
-        commercial_reuse_allowed=True,
-        derivative_editing_allowed=True,
+        evidence={
+            "evidence_type": "ROCKSTAR_GAMES_POLICY_COMPLIANT",
+            "commercial_reuse_allowed": True,
+            "evidence_url_or_doc": "https://rockstargames.com/press",
+            "creator_identity": "Rockstar Games",
+        },
     )
 
 
