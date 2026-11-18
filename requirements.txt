@@ -1,0 +1,28 @@
+# GTA 6 AI YouTube Shorts Automation Agent Dependencies
+
+# Video & Media Processing
+imageio>=2.36.0
+imageio-ffmpeg>=0.5.1
+moviepy>=2.0.0
+numpy>=1.26.0
+pillow>=10.0.0
+
+# Speech, Voiceover & Subtitles
+edge-tts>=6.1.0
+pydub>=0.25.1
+
+# YouTube Data API v3
+google-api-python-client>=2.100.0
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-auth-httplib2>=0.1.1
+requests>=2.31.0
+
+# Web Dashboard & API
+fastapi>=0.110.0
+uvicorn>=0.28.0
+streamlit>=1.35.0
+
+# Utilities & Offline TTS
+python-dotenv>=1.0.0
+pywin32>=306; sys_platform == 'win32'  # Required for Windows SAPI offline TTS fallback

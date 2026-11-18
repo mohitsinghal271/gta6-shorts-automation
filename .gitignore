@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and virtual environments
+.pytest_cache/
+venv/
+env/
+.env
+
+# YouTube OAuth and Sensitive Tokens
+client_secrets.json
+youtube_token.json
+token.json
+token.pickle
+credentials.json
+*.pickle
+*.token
+*.key
+*.secret
+
+# Databases and Runtime Output
+*.db
+*.sqlite
+*.sqlite3
+logs/*.log
+output/buffer/
+output/candidates/*.mp4
+output/final/*.mp4
+input/*.mp4
+assets/voiceovers/*.mp3
+assets/voiceovers/*.wav
+assets/subtitles/*.ass
+assets/subtitles/*.srt
+temp_*.aac
+*.tmp
+

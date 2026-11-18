@@ -1,0 +1,77 @@
+name: GTA 6 24/7 Auto Shorts Publisher
+
+on:
+  schedule:
+    # Runs automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger button in GitHub Actions tab
+
+jobs:
+  process-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install System FFmpeg & Subtitle Fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu fonts-freefont-ttf
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore YouTube OAuth Credentials
+        env:
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+          YOUTUBE_CLIENT_SECRET_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
+        run: |
+          if [ -n "$YOUTUBE_TOKEN_JSON" ]; then
+            echo "$YOUTUBE_TOKEN_JSON" > youtube_token.json
+          fi
+          if [ -n "$YOUTUBE_CLIENT_SECRET_JSON" ]; then
+            echo "$YOUTUBE_CLIENT_SECRET_JSON" > client_secrets.json
+          fi
+
+      - name: Verify YouTube Channel Connection
+        run: |
+          python cli.py channel-status
+
+      - name: Run Livestream Discovery & Storage Cleanup
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          LIVESTREAM_DISCOVERY_MOCK: "0"
+        run: |
+          python cli.py discover-streams --query "GTA 6" --limit 10 || true
+          python cli.py recover
+
+      - name: Publish Next Approved Clip to @gta-6-rampage
+        run: |
+          python -c "
+          from database.db import db
+          import subprocess
+          import sys
+
+          approved = db.list_clips(status='approved', limit=1)
+          if not approved:
+              print('No approved clips pending upload.')
+              sys.exit(0)
+
+          cid = approved[0]['id']
+          print(f'Publishing clip {cid} to @gta-6-rampage...')
+          p = subprocess.run(['python', 'cli.py', 'upload', str(cid), '--live', '--privacy', 'public'], capture_output=True, text=True)
+          print(p.stdout)
+          if p.returncode != 0:
+              print(p.stderr)
+              sys.exit(p.returncode)
+          "

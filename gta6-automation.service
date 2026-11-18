@@ -1,0 +1,19 @@
+[Unit]
+Description=GTA 6 AI YouTube Shorts 24/7 Autonomous Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/gta6-agent
+ExecStart=/usr/bin/python3 daemon_service.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/opt/gta6-agent/logs/daemon_stdout.log
+StandardError=append:/opt/gta6-agent/logs/daemon_stderr.log
+Environment=PYTHONUNBUFFERED=1
+Environment=YOUTUBE_UPLOAD_SIMULATION=0
+Environment=LIVESTREAM_DISCOVERY_MOCK=0
+
+[Install]
+WantedBy=multi-user.target

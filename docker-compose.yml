@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  gta6-daemon:
+    build: .
+    container_name: gta6-autonomous-agent
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
+      - YOUTUBE_UPLOAD_SIMULATION=0
+      - LIVESTREAM_DISCOVERY_MOCK=0
+      - YOUTUBE_DEFAULT_PRIVACY=private
+    volumes:
+      # Persist SQLite database, outputs, and OAuth credentials across container updates
+      - ./database:/app/database
+      - ./output:/app/output
+      - ./input:/app/input
+      - ./logs:/app/logs
+      - ./client_secrets.json:/app/client_secrets.json:ro
+      - ./youtube_token.json:/app/youtube_token.json:rw
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
