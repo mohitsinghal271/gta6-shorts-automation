@@ -36,12 +36,12 @@ jobs:
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
           YOUTUBE_CLIENT_SECRET_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
         run: |
-          if [ -n "$YOUTUBE_TOKEN_JSON" ]; then
-            echo "$YOUTUBE_TOKEN_JSON" > youtube_token.json
+          if [ -z "$YOUTUBE_TOKEN_JSON" ] || [ -z "$YOUTUBE_CLIENT_SECRET_JSON" ]; then
+            echo "::error::Missing GitHub Actions Secrets: YOUTUBE_TOKEN_JSON and YOUTUBE_CLIENT_SECRET_JSON must be configured in Repository Settings -> Secrets and variables -> Actions."
+            exit 1
           fi
-          if [ -n "$YOUTUBE_CLIENT_SECRET_JSON" ]; then
-            echo "$YOUTUBE_CLIENT_SECRET_JSON" > client_secrets.json
-          fi
+          echo "$YOUTUBE_TOKEN_JSON" > youtube_token.json
+          echo "$YOUTUBE_CLIENT_SECRET_JSON" > client_secrets.json
 
       - name: Verify YouTube Channel Connection
         run: |

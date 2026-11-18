@@ -158,8 +158,10 @@ def cmd_channel_status(args):
             print("Ready to publish Shorts to YouTube.")
         else:
             print("FAILED: Could not authenticate with YouTube API.")
+            sys.exit(1)
     except Exception as e:
         print(f"ERROR: {e}")
+        sys.exit(1)
 
 
 def cmd_auth(args):
