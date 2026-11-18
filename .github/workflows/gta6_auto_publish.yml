@@ -55,23 +55,9 @@ jobs:
           python cli.py discover-streams --query "GTA 6" --limit 10 || true
           python cli.py recover
 
-      - name: Publish Next Approved Clip to @gta-6-rampage
+      - name: Generate & Publish Short to @gta-6-rampage
+        env:
+          YOUTUBE_DEFAULT_PRIVACY: "public"
+          YOUTUBE_UPLOAD_SIMULATION: "0"
         run: |
-          python -c "
-          from database.db import db
-          import subprocess
-          import sys
-
-          approved = db.list_clips(status='approved', limit=1)
-          if not approved:
-              print('No approved clips pending upload.')
-              sys.exit(0)
-
-          cid = approved[0]['id']
-          print(f'Publishing clip {cid} to @gta-6-rampage...')
-          p = subprocess.run(['python', 'cli.py', 'upload', str(cid), '--live', '--privacy', 'public'], capture_output=True, text=True)
-          print(p.stdout)
-          if p.returncode != 0:
-              print(p.stderr)
-              sys.exit(p.returncode)
-          "
+          python generate_and_publish.py
